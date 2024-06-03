@@ -1,16 +1,45 @@
 $backgroundColor: #efefef;
-$radius: 40%;
+$radius: 30px;
+
+#formContainer {
+  margin: auto;
+  padding: 3rem;
+  display: flex;
+  align-items: center;
+  background: radial-gradient(circle, rgb(200, 219, 110), $backgroundColor);
+  border-radius: $radius;
+}
 
 form {
-  display: inline-block;
+  display: block;
   margin: auto;
-  width: 200px;
+  width: 500px;
+  align-items: center;
+
+  #http-buttons{
+    display: block;
+  }
 
   label {
-    display: flex;
-    margin: 1rem 0;
+    display: block;
+
+    &.URL {
+      display: flex;
+      justify-content: center;
+      span {
+          padding-left: 10px;
+          padding-right: 10px;
+        }
+      }
 
     &.methods {
+      display: flex;
+      justify-content: space-between;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 10px;
+      padding-bottom: 10px;
+
       span {
         cursor: pointer;
         margin-right: 1rem;

@@ -1,13 +1,25 @@
 import React from 'react';
 
-class Results extends React.Component {
-  render() {
-    return (
+import './Results.scss';
+
+function Results(props) {
+  return (
+    <>
       <section>
-        <pre>{this.props.data ? JSON.stringify(this.props.data, undefined, 2) : null}</pre>
+        <h2>{props.data ? 'Count: '+ props.data.count : null}</h2>
       </section>
-    );
-  }
+      <section>
+      {props.data ? 
+        (<ul>
+          {props.data.results.map((result, index) => {
+            return (<li key={index}>{JSON.stringify(result)}</li>)
+          })
+        }
+
+        </ul>)  : null}
+      </section>
+    </>
+  );
 }
 
 export default Results;

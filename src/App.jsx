@@ -2,6 +2,8 @@ import React from 'react';
 
 import './App.scss';
 
+import axios from 'axios';
+
 // Let's talk about using index.js and some other name in the component folder.
 // There's pros and cons for each way of doing this...
 // OFFICIALLY, we have chosen to use the Airbnb style guide naming convention. 
@@ -21,14 +23,19 @@ class App extends React.Component {
     };
   }
 
-  callApi = (requestParams) => {
-    // mock output
+  async fetchData(url){
+    const response = await axios.get(url);
+    return response.data.results;
+
+  }
+
+  callApi = async(requestParams)  => {
+    const results = await this.fetchData(requestParams.url);
+    console.log(results);
+    
     const data = {
-      count: 2,
-      results: [
-        {name: 'fake thing 1', url: 'http://fakethings.com/1'},
-        {name: 'fake thing 2', url: 'http://fakethings.com/2'},
-      ],
+      count: results.length,
+      results: results
     };
     this.setState({data, requestParams});
   }

@@ -1,10 +1,24 @@
 import React from 'react';
 
+import './Results.scss';
+
 function Results(props) {
   return (
-    <section>
-      <pre>{props.data ? JSON.stringify(props.data, undefined, 2) : null}</pre>
-    </section>
+    <>
+      <section>
+        <h2>{props.data ? 'Count: '+ props.data.count : null}</h2>
+      </section>
+      <section>
+      {props.data ? 
+        (<ul>
+          {props.data.results.map((result, index) => {
+            return (<li key={index}>{JSON.stringify(result)}</li>)
+          })
+        }
+
+        </ul>)  : null}
+      </section>
+    </>
   );
 }
 

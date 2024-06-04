@@ -5,10 +5,10 @@
 
 
 ## Overview
-This is a basic rest api with the abiity to fetch data from a url.
+This is a basic rest api with the abiity to get, post, put and delete data to and from a url.
 
 ## Getting Started
-Type the url into the form and click "GO" to make a get request.
+Select a mehtod, type the url into the form and click "GO" to make a request. Type you reponse body into into the JSON Body field.
 
 ## Architecture
     "axios": "^1.7.2",

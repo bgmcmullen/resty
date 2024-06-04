@@ -1,8 +1,65 @@
 $backgroundColor: #efefef;
 $radius: 30px;
 
+input[type=radio] {
+  display: none;
+}
+
+input[type=text] {
+  font-size: 15px;
+  width: 350px;
+}
+
+#url {
+  margin-top: auto;
+  margin-bottom: auto;
+}
+
+button {
+  font-size: 15px;
+}
+
+@keyframes colorChange {
+  0% {
+    background: #ccc;
+  }
+  50% {
+    background: rgb(255, 136, 0);
+  }
+  100% {
+    background: #ccc;
+  }
+}
+
+@keyframes textColorChange {
+  0% {
+    color: black;
+  }
+  50% {
+    color: gold;
+  }
+  100% {
+    color: black;
+  }
+}
+
+/* Default state when not checked and not hovered */
+label.methods span {
+  background: #ccc; /* Default background color */
+}
+
+/* Apply styles when radio button is checked */
+input[type=radio]:checked + span {
+  background: red;
+  animation: textColorChange 5s ease infinite ;
+}
+
+/* Apply styles when the span is hovered and radio button is not checked */
+label.methods span:hover:not(input[type=radio]:checked + span) {
+  animation: colorChange 1s  ease infinite;
+}
+
 #formContainer {
-  margin: auto;
   padding: 3rem;
   display: flex;
   align-items: center;
@@ -16,7 +73,7 @@ form {
   width: 500px;
   align-items: center;
 
-  #http-buttons{
+  #http-buttons {
     display: block;
   }
 
@@ -26,11 +83,12 @@ form {
     &.URL {
       display: flex;
       justify-content: center;
+
       span {
-          padding-left: 10px;
-          padding-right: 10px;
-        }
+        padding-left: 10px;
+        padding-right: 10px;
       }
+    }
 
     &.methods {
       display: flex;
@@ -43,12 +101,7 @@ form {
       span {
         cursor: pointer;
         margin-right: 1rem;
-        padding: .25rem .5rem;
-        background: #ccc;
-
-        &:hover, &.active {
-          background: #fff;
-        }
+        padding: 0.25rem 0.5rem;
       }
     }
   }

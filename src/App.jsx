@@ -19,7 +19,7 @@ class App extends React.Component {
     super(props);
     this.state = {
       data: null,
-      requestParams: {},
+      requestParams: {method: ''},
     };
   }
 
@@ -30,6 +30,8 @@ class App extends React.Component {
   }
 
   callApi = async(requestParams)  => {
+    if(!requestParams.url)
+      return;
     const results = await this.fetchData(requestParams.url);
     console.log(results);
     
@@ -40,13 +42,17 @@ class App extends React.Component {
     this.setState({data, requestParams});
   }
 
+  setAppState = (newState) => {
+    this.setState(newState);
+  }
+
   render() {
     return (
       <React.Fragment>
         <Header />
-        <div>Request Method: {this.state.requestParams.method}</div>
+        <div>Request Method: {this.state.requestParams.method.toUpperCase()}</div>
         <div>URL: {this.state.requestParams.url}</div>
-        <Form handleApiCall={this.callApi} />
+        <Form handleApiCall={this.callApi} setAppState={this.setAppState}/>
         <Results data={this.state.data} />
         <Footer />
       </React.Fragment>

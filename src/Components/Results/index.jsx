@@ -4,7 +4,8 @@ import './Results.scss';
 
 function Results(props) {
   return (
-    <>
+    <section className="results">
+    <h2>Response:</h2>
       <section>
         <h2>{props.data ? 'Count: '+ props.data.count : null}</h2>
       </section>
@@ -18,7 +19,7 @@ function Results(props) {
 
         </ul>)  : null}
       </section>
-    </>
+    </section>
   );
 }
 

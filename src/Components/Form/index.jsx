@@ -5,12 +5,13 @@ import './Form.scss';
 function Form(props) {
 
   const [url, setUrl] = useState('');
+  const [method, setMethod] = useState('get');
 
 
   function handleSubmit(e) {
     e.preventDefault();
     const formData = {
-      method: 'GET',
+      method: method,
       url: url,
     };
     props.handleApiCall(formData);
@@ -20,28 +21,43 @@ function Form(props) {
     setUrl(e.target.value);
   }
 
+  function handleMethodChange(e) {
+    props.setAppState({ requestParams: { ...props.requestParams, method: e.target.value } });
+  }
+
   return (
-      <>
+    <>
       <div id='formContainer'>
         <form onSubmit={handleSubmit}>
           <label className="URL">
-            <span>URL: </span>
-            <input name='url' type='text' onChange={handleUrlChange}/>
+            <span id="url">URL: </span>
+            <input name='url' type='text' onChange={handleUrlChange} />
             <button type="submit">GO!</button>
           </label>
           <div id='http-buttons'>
-          <label className="methods">
-            <span id="get">GET</span>
-            <span id="post">POST</span>
-            <span id="put">PUT</span>
-            <span id="delete">DELETE</span>
-          </label>
+            <label className="methods">
+              <label>
+                <input type="radio" name="method" value="get" onChange={handleMethodChange}/>
+                <span id="get">GET</span>
+              </label>
+              <label>
+                <input type="radio" name="method" value="post" onChange={handleMethodChange}/>
+                <span id="post">POST</span>
+              </label>
+              <label>
+                <input type="radio" name="method" value="put" onChange={handleMethodChange}/>
+                <span id="put">PUT</span>
+              </label>
+              <label>
+                <input type="radio" name="method" value="delete" onChange={handleMethodChange}/>
+                <span id="delete">DELETE</span>
+              </label>
+            </label>
           </div>
-   
         </form>
-        </div>
-      </>
-      );
+      </div>
+    </>
+  );
 }
 
-      export default Form;
+export default Form;

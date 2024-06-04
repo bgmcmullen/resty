@@ -1,7 +1,7 @@
 # RESTy
 
 **Author**: Brendan McMullen
-**Version**: 1.0.1
+**Version**: 1.0.2
 
 
 ## Overview

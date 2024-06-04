@@ -15,8 +15,21 @@ input[type=text] {
   margin-bottom: auto;
 }
 
+textarea {
+  margin: 10px;
+  width: 1fr;
+  height: 220px;
+  border: dashed;
+  min-height: 100px;
+}
+
 button {
   font-size: 15px;
+}
+
+h4 {
+  margin-left: 10px;
+  margin-bottom: 0px;
 }
 
 @keyframes colorChange {

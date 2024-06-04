@@ -4,6 +4,7 @@ html, body {
   height: 100%;
   margin: 0;
   padding: 0;
+  min-width: 600px;
 }
 
 body {
@@ -31,4 +32,14 @@ body {
     margin: 0;
     text-align: center;
   }
+
+  #request-labels {
+    margin: 3px;
+    border: solid;
+    margin-left: 20px;
+    margin-right: 20px;
+    font-weight: 100;
+    background: linear-gradient(to left, rgb(255, 214, 103), white)
+  }
 }
+

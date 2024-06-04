@@ -1,5 +1,18 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@700&display=swap');
+
 header {
-  text-align: center;
-  background: linear-gradient(to bottom, black, rgb(180, 175, 175)) !important;
+  background: linear-gradient(to bottom, rgb(52, 44, 0), rgb(180, 175, 175)) !important;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 80px;
+  font-family: 'Roboto', sans-serif;
+  justify-content: space-between;
+  min-width: 500px;
 }
 
+h1 {
+  display: inline;
+  padding: 10px;
+}

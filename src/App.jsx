@@ -19,34 +19,49 @@ class App extends React.Component {
     super(props);
     this.state = {
       data: null,
-      requestParams: {},
+      requestParams: {method: 'get'},
+      requestBody: null
     };
   }
 
-  async fetchData(url){
-    const response = await axios.get(url);
-    return response.data.results;
+  async fetchData(requestBody) {
 
+    try {
+      const response = await axios.request({
+        url: this.state.requestParams.url,
+        method: this.state.requestParams.method, // Use the dynamic HTTP method here
+        data: requestBody 
+      });
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching data:', error);
+      throw error;
+    }
   }
 
-  callApi = async(requestParams)  => {
-    const results = await this.fetchData(requestParams.url);
-    console.log(results);
+  callApi = async(requestBody)  => {
+    if(!this.state.requestParams.url)
+      return;
+    const results = await this.fetchData(requestBody);
     
     const data = {
-      count: results.length,
+      count: Array.isArray(results) ? results.length: 'N/A',
       results: results
     };
-    this.setState({data, requestParams});
+    this.setState({data});
+  }
+
+  setAppState = (newState) => {
+    this.setState(newState);
   }
 
   render() {
     return (
       <React.Fragment>
         <Header />
-        <div>Request Method: {this.state.requestParams.method}</div>
-        <div>URL: {this.state.requestParams.url}</div>
-        <Form handleApiCall={this.callApi} />
+        <h4 id="request-labels">Request Method: {this.state.requestParams.method ? this.state.requestParams.method.toUpperCase() : null}</h4>
+        <h4 id="request-labels">URL: {this.state.requestParams.url}</h4>
+        <Form handleApiCall={this.callApi} setAppState={this.setAppState}/>
         <Results data={this.state.data} />
         <Footer />
       </React.Fragment>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import './Form.scss';
 
@@ -8,13 +8,12 @@ function Form(props) {
   const [requestBody, setRequestBody] = useState('');
   const [method, setMethod] = useState('get');
 
+  useEffect(() => {
+    props.setAppState({ requestParams: { ...props.requestParams, method, url }});
+  }, [url, method]);
 
   function handleSubmit(e) {
     e.preventDefault();
-    // const formData = {
-    //   method: method,
-    //   url: url,
-    // };
     props.handleApiCall(requestBody);
   }
 
@@ -22,13 +21,13 @@ function Form(props) {
     // setUrl(e.target.value);
     const urlString = e.target.value
     setUrl(urlString)
-    props.setAppState({ requestParams: { ...props.requestParams, method, url: urlString } });
+    // props.setAppState({ requestParams: { ...props.requestParams, method, url: urlString } });
   }
 
   function handleMethodChange(e) {
     const newMethod = e.target.value;
     setMethod(newMethod);
-    props.setAppState({ requestParams: { ...props.requestParams, method: newMethod, url } });
+    // props.setAppState({ requestParams: { ...props.requestParams, method: newMethod, url } });
   }
 
   function handleJSONChange(e){

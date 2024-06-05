@@ -1,68 +1,72 @@
-import React, { useState, useCallback } from 'react';
+import React from 'react';
 
 import './App.scss';
 
 import axios from 'axios';
 
+// Let's talk about using index.js and some other name in the component folder.
+// There's pros and cons for each way of doing this...
+// OFFICIALLY, we have chosen to use the Airbnb style guide naming convention. 
+// Why is this source of truth beneficial when spread across a global organization?
 import Header from './Components/Header';
 import Footer from './Components/Footer';
 import Form from './Components/Form';
 import Results from './Components/Results';
 
-const App = () => {
-  const [data, setData] = useState(null);
-  const [requestParams, setRequestParams] = useState({ method: 'get', url: '' });
-  const [requestBody, setRequestBody] = useState(null);
+class App extends React.Component {
 
-  const fetchData = useCallback(async (requestBody) => {
+  constructor(props) {
+    super(props);
+    this.state = {
+      data: null,
+      requestParams: {method: 'get'},
+      requestBody: null
+    };
+  }
+
+  async fetchData(requestBody) {
+
     try {
       const response = await axios.request({
-        url: requestParams.url,
-        method: requestParams.method,
-        data: requestBody,
+        url: this.state.requestParams.url,
+        method: this.state.requestParams.method, // Use the dynamic HTTP method here
+        data: requestBody 
       });
       return response.data;
     } catch (error) {
       console.error('Error fetching data:', error);
       throw error;
     }
-  }, [requestParams]);
+  }
 
-  const callApi = useCallback(async (requestBody) => {
-    if (!requestParams.url) return;
-
-    const results = await fetchData(requestBody);
-
+  callApi = async(requestBody)  => {
+    if(!this.state.requestParams.url)
+      return;
+    const results = await this.fetchData(requestBody);
+    
     const data = {
-      count: Array.isArray(results) ? results.length : 'N/A',
-      results: results,
+      count: Array.isArray(results) ? results.length: 'N/A',
+      results: results
     };
+    this.setState({data});
+  }
 
-    setData(data);
-  }, [fetchData, requestParams]);
+  setAppState = (newState) => {
+    this.setState(newState);
+  }
 
-  const setAppState = (newState) => {
-    if (newState.requestParams) {
-      setRequestParams(newState.requestParams);
-    }
-    if (newState.data) {
-      setData(newState.data);
-    }
-    if (newState.requestBody) {
-      setRequestBody(newState.requestBody);
-    }
-  };
-
-  return (
-    <React.Fragment>
-      <Header />
-      <h4 id="request-labels">Request Method: {requestParams.method ? requestParams.method.toUpperCase() : null}</h4>
-      <h4 id="request-labels">URL: {requestParams.url}</h4>
-      <Form handleApiCall={callApi} setAppState={setAppState} requestParams={requestParams} />
-      <Results data={data} />
-      <Footer />
-    </React.Fragment>
-  );
-};
+  render() {
+    return (
+      <React.Fragment>
+        <Header />
+        <h4 id="request-labels">Request Method: {this.state.requestParams.method ? this.state.requestParams.method.toUpperCase() : null}</h4>
+        <h4 id="request-labels">URL: {this.state.requestParams.url}</h4>
+        <Form handleApiCall={this.callApi} setAppState={this.setAppState}/>
+        <Results data={this.state.data} />
+        <Footer />
+      </React.Fragment>
+    );
+  }
+}
 
 export default App;

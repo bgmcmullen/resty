@@ -68,7 +68,7 @@ function Form(props) {
         </form>
       </div>
       <h4>JSON Body:</h4>
-      <textarea id="JSON-input" onChange={handleJSONChange}>
+      <textarea id="JSON-input" onChange={handleJSONChange} data-testid="json-input">
       </textarea>
     </>
   );

@@ -1,36 +1,74 @@
 import React from 'react';
 import { render, fireEvent } from '@testing-library/react';
+import '@testing-library/jest-dom/';
 import Form from './index.jsx';
 
-xdescribe('Form component', () => {
-  test('calls handleApiCall with correct formData when form is submitted', () => {
-    const handleApiCall = jest.fn();
-    const { getByLabelText, getByText } = render(<Form handleApiCall={handleApiCall} />);
-    
-    const urlInput = getByLabelText('URL:');
-    const submitButton = getByText('GO!');
-    
-    // Enter a URL in the input field
-    fireEvent.change(urlInput, { target: { value: 'https://example.com' } });
-    
-    // Submit the form
-    fireEvent.click(submitButton);
-    
-    // Check if handleApiCall has been called with the correct formData
-    expect(handleApiCall).toHaveBeenCalledWith({
-      method: 'GET',
-      url: 'https://example.com',
+describe('Form Component', () => {
+  let handleApiCallMock;
+  let setAppStateMock;
+
+  beforeEach(() => {
+    handleApiCallMock = jest.fn();
+    setAppStateMock = jest.fn();
+  });
+
+  test('renders form correctly', () => {
+    const { getByLabelText, getByText, getByTestId } = render(
+      <Form handleApiCall={handleApiCallMock} setAppState={setAppStateMock} />
+    );
+
+    expect(getByLabelText('URL:')).toBeInTheDocument();
+    expect(getByText('GO!')).toBeInTheDocument();
+    expect(getByTestId('json-input')).toBeInTheDocument();
+    expect(getByLabelText('GET')).toBeInTheDocument();
+    expect(getByLabelText('POST')).toBeInTheDocument();
+    expect(getByLabelText('PUT')).toBeInTheDocument();
+    expect(getByLabelText('DELETE')).toBeInTheDocument();
+  });
+
+  test('handles URL change correctly', () => {
+    const { getByLabelText } = render(
+      <Form handleApiCall={handleApiCallMock} setAppState={setAppStateMock} requestParams={{}} />
+    );
+
+    fireEvent.change(getByLabelText('URL:'), { target: { value: 'https://example.com/api' } });
+
+    expect(setAppStateMock).toHaveBeenCalledWith({
+      requestParams: { method: 'get', url: 'https://example.com/api' },
     });
   });
 
-  test('updates url state when input value changes', () => {
-    const { getByLabelText } = render(<Form />);
-    const urlInput = getByLabelText('URL:');
-    
-    // Enter a URL in the input field
-    fireEvent.change(urlInput, { target: { value: 'https://example.com' } });
-    
-    // Check if the url state is updated correctly
-    expect(urlInput.value).toBe('https://example.com');
+  test('handles method change correctly', () => {
+    const { getByLabelText } = render(
+      <Form handleApiCall={handleApiCallMock} setAppState={setAppStateMock} requestParams={{ url: '' }} />
+    );
+
+    fireEvent.click(getByLabelText('POST'));
+
+    expect(setAppStateMock).toHaveBeenCalledWith({
+      requestParams: { method: 'post', url: '' },
+    });
+  });
+
+  test('handles JSON body change correctly', () => {
+    const { getByTestId } = render(
+      <Form handleApiCall={handleApiCallMock} setAppState={setAppStateMock} />
+    );
+
+    fireEvent.change(getByTestId('json-input'), { target: { value: '{"key":"value"}' } });
+
+    expect(JSON.parse(getByTestId('json-input').value)).toEqual({ key: 'value' });
+  });
+
+  test('handles form submission correctly', () => {
+    const { getByText, getByLabelText, getByTestId } = render(
+      <Form handleApiCall={handleApiCallMock} setAppState={setAppStateMock} />
+    );
+
+    fireEvent.change(getByLabelText('URL:'), { target: { value: 'https://example.com/api' } });
+    fireEvent.change(getByTestId('json-input'), { target: { value: '{"key":"value"}' } });
+    fireEvent.click(getByText('GO!'));
+
+    expect(handleApiCallMock).toHaveBeenCalledWith({ key: 'value' });
   });
 });

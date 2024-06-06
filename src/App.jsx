@@ -1,72 +1,68 @@
-import React from 'react';
-
+import React, { useState, useEffect } from 'react';
 import './App.scss';
-
 import axios from 'axios';
-
-// Let's talk about using index.js and some other name in the component folder.
-// There's pros and cons for each way of doing this...
-// OFFICIALLY, we have chosen to use the Airbnb style guide naming convention. 
-// Why is this source of truth beneficial when spread across a global organization?
 import Header from './Components/Header';
 import Footer from './Components/Footer';
 import Form from './Components/Form';
 import Results from './Components/Results';
+import History from './Components/History';
 
-class App extends React.Component {
+const App = () => {
+  const [data, setData] = useState(null);
+  const [requestParams, setRequestParams] = useState({ method: 'get' });
+  const [historyArray, setHistoryArray] = useState([]);
+  useEffect(() => {
+    console.log(historyArray);
+  }, [historyArray]);
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      data: null,
-      requestParams: {method: 'get'},
-      requestBody: null
-    };
-  }
-
-  async fetchData(requestBody) {
-
+  const fetchData = async (requestBody) => {
     try {
       const response = await axios.request({
-        url: this.state.requestParams.url,
-        method: this.state.requestParams.method, // Use the dynamic HTTP method here
-        data: requestBody 
+        url: requestParams.url,
+        method: requestParams.method,
+        data: requestBody,
       });
       return response.data;
     } catch (error) {
       console.error('Error fetching data:', error);
       throw error;
     }
-  }
+  };
 
-  callApi = async(requestBody)  => {
-    if(!this.state.requestParams.url)
-      return;
-    const results = await this.fetchData(requestBody);
-    
-    const data = {
-      count: Array.isArray(results) ? results.length: 'N/A',
-      results: results
+  const callApi = async (requestBody) => {
+    if (!requestParams.url) return;
+    const results = await fetchData(requestBody);
+    const updatedData = {
+      count: Array.isArray(results) ? results.length : 'N/A',
+      results: results,
     };
-    this.setState({data});
-  }
+    const historyObject = {...requestParams, requestBody, ...updatedData};
+    
+    setHistoryArray([...historyArray, historyObject]);
+    setData(updatedData);
+  };
 
-  setAppState = (newState) => {
-    this.setState(newState);
-  }
+  const setAppState = (newState) => {
+    setRequestParams(newState.requestParams);
+  };
 
-  render() {
-    return (
-      <React.Fragment>
-        <Header />
-        <h4 id="request-labels">Request Method: {this.state.requestParams.method ? this.state.requestParams.method.toUpperCase() : null}</h4>
-        <h4 id="request-labels">URL: {this.state.requestParams.url}</h4>
-        <Form handleApiCall={this.callApi} setAppState={this.setAppState}/>
-        <Results data={this.state.data} />
-        <Footer />
-      </React.Fragment>
-    );
-  }
-}
+  return (
+    <React.Fragment>
+      <Header />
+      <div className="section-container">
+        <section className="sidebar-section">
+          <History />
+        </section>
+        <section className="main-section">
+          <h4 id="request-labels">Request Method: {requestParams.method ? requestParams.method.toUpperCase() : null}</h4>
+          <h4 id="request-labels">URL: {requestParams.url}</h4>
+          <Form handleApiCall={callApi} setAppState={setAppState} />
+          <Results data={data} />
+        </section>
+      </div>
+      <Footer />
+    </React.Fragment>
+  );
+};
 
 export default App;

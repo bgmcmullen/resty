@@ -1,0 +1,23 @@
+/* Style the sidebar */
+.sidebar {
+  height: 100%;
+  top: 0;
+  left: 0;
+  background-color: #111;
+  padding-top: 20px;
+}
+
+/* Links inside the sidebar */
+.sidebar h3 {
+  padding: 10px;
+  text-decoration: none;
+  font-size: 18px;
+  color: white;
+  display: block;
+}
+
+/* Change color on hover */
+.sidebar h3:hover {
+  background-color: #555;
+}
+

@@ -7,8 +7,10 @@ function Form(props) {
   const [url, setUrl] = useState('');
   const [requestBody, setRequestBody] = useState('');
   const [method, setMethod] = useState('get');
+  const [jsonColor, setJsonColor] = useState('green');
 
   useEffect(() => {
+
     props.setAppState({ requestParams: { ...props.requestParams, method, url }});
   }, [url, method]);
 
@@ -31,7 +33,15 @@ function Form(props) {
   }
 
   function handleJSONChange(e){
-    const requestBody = JSON.parse(e.target.value);
+    let requestBody = e.target.value;
+    try {
+      requestBody = JSON.parse(e.target.value);
+    } catch {
+      setJsonColor('red');
+      setRequestBody(requestBody);
+      return;
+    }
+    setJsonColor('green');
     setRequestBody(requestBody);
   }
 
@@ -67,7 +77,7 @@ function Form(props) {
         </form>
       </div>
       <h4>JSON Body:</h4>
-      <textarea id="JSON-input" onChange={handleJSONChange} data-testid="json-input">
+      <textarea id="JSON-input" onChange={handleJSONChange} data-testid="json-input" style={{color: jsonColor}}>
       </textarea>
     </>
   );

@@ -6,7 +6,7 @@ function Results(props) {
     <section className="results">
       <h2>Response:</h2>
       <section>
-        <h2>{props.data ? 'Count: ' + props.data.count : null}</h2>
+        <h2>{props.data ? (props.data.count ? 'Count: ' + props.data.count : null) : null}</h2>
       </section>
       <section>
         {props.data ? (

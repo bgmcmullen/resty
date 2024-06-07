@@ -3,7 +3,7 @@ import { render } from '@testing-library/react';
 import '@testing-library/jest-dom'; // for the additional matchers
 import Results from './index.jsx'; // Ensure this path is correct
 
-xdescribe('Results component', () => {
+describe('Results component', () => {
   test('renders count when data is provided', () => {
     const data = { count: 5, results: [] };
     const { getByText } = render(<Results data={data} />);

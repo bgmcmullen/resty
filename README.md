@@ -1,11 +1,11 @@
 # RESTy
 
 **Author**: Brendan McMullen
-**Version**: 1.0.2
+**Version**: 1.0.4
 
 
 ## Overview
-This is a basic rest api with the abiity to get, post, put and delete data to and from a url.
+This is a basic rest api with the abiity to get, post, put and delete data to and from a url. It also maintains a history of your api calls.
 
 ## Getting Started
 Select a mehtod, type the url into the form and click "GO" to make a request. Type you reponse body into into the JSON Body field.

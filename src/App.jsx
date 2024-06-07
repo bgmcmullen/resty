@@ -1,72 +1,117 @@
-import React from 'react';
-
+import React, { useState, useReducer } from 'react';
 import './App.scss';
-
 import axios from 'axios';
-
-// Let's talk about using index.js and some other name in the component folder.
-// There's pros and cons for each way of doing this...
-// OFFICIALLY, we have chosen to use the Airbnb style guide naming convention. 
-// Why is this source of truth beneficial when spread across a global organization?
 import Header from './Components/Header';
 import Footer from './Components/Footer';
 import Form from './Components/Form';
 import Results from './Components/Results';
+import History from './Components/History';
 
-class App extends React.Component {
+// Define action types
+const ActionTypes = {
+  SET_DATA: 'SET_DATA',
+  SET_REQUEST_PARAMS: 'SET_REQUEST_PARAMS',
+  ADD_TO_HISTORY: 'ADD_TO_HISTORY',
+  CLEAR_HISTORY: 'CLEAR_HISTORY'
+};
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      data: null,
-      requestParams: {method: 'get'},
-      requestBody: null
-    };
+// Reducer function to handle state updates
+const reducer = (state, action) => {
+  switch (action.type) {
+    case ActionTypes.SET_DATA:
+      return { ...state, data: action.payload };
+    case ActionTypes.SET_REQUEST_PARAMS:
+      return { ...state, requestParams: action.payload };
+    case ActionTypes.ADD_TO_HISTORY:
+      return { ...state, historyArray: [...state.historyArray, action.payload] };
+    case ActionTypes.CLEAR_HISTORY:
+      return { ...state, historyArray: [] };
+    default:
+      return state;
   }
+};
 
-  async fetchData(requestBody) {
+const initialState = {
+  data: null,
+  requestParams: { method: 'get' },
+  historyArray: [],
+  oldRequestBody: {},
+  oldUrl: '',
+  oldMethod: 'get'
+};
 
+const App = () => {
+  const [state, dispatch] = useReducer(reducer, initialState);
+
+  const fetchData = async (requestBody) => {
     try {
       const response = await axios.request({
-        url: this.state.requestParams.url,
-        method: this.state.requestParams.method, // Use the dynamic HTTP method here
-        data: requestBody 
+        url: state.requestParams.url,
+        method: state.requestParams.method,
+        data: requestBody,
       });
+
       return response.data;
     } catch (error) {
       console.error('Error fetching data:', error);
       throw error;
     }
-  }
+  };
 
-  callApi = async(requestBody)  => {
-    if(!this.state.requestParams.url)
-      return;
-    const results = await this.fetchData(requestBody);
-    
-    const data = {
-      count: Array.isArray(results) ? results.length: 'N/A',
-      results: results
+  const callApi = async (requestBody) => {
+    if (!state.requestParams.url) return;
+    const results = await fetchData(requestBody);
+    const updatedData = {
+      count: Array.isArray(results) ? results.length : 'N/A',
+      results: results,
     };
-    this.setState({data});
+    const historyObject = { requestParams: state.requestParams, requestBody, data: updatedData };
+
+    if (!containsIdenticalObject(state.historyArray, historyObject)) {
+      dispatch({ type: ActionTypes.ADD_TO_HISTORY, payload: historyObject });
+    }
+
+    dispatch({ type: ActionTypes.SET_DATA, payload: updatedData });
+  };
+
+  function containsIdenticalObject(array, obj) {
+    return array.some(item => JSON.stringify(item) === JSON.stringify(obj));
   }
 
-  setAppState = (newState) => {
-    this.setState(newState);
+  const setAppState = (newState) => {
+    dispatch({ type: ActionTypes.SET_REQUEST_PARAMS, payload: newState.requestParams });
+  };
+
+  const restoreHistory = (index) => {
+    const historyItem = state.historyArray[index];
+    dispatch({ type: ActionTypes.SET_REQUEST_PARAMS, payload: historyItem.requestParams });
+    dispatch({ type: ActionTypes.SET_DATA, payload: historyItem.data });
+    dispatch({ type: ActionTypes.SET_DATA, payload: historyItem.requestParams.url });
+    dispatch({ type: ActionTypes.SET_DATA, payload: historyItem.requestBody });
+    dispatch({ type: ActionTypes.SET_DATA, payload: historyItem.requestParams.method });
+  };
+
+  const clearHistory = () => {
+    dispatch({ type: ActionTypes.CLEAR_HISTORY });
   }
 
-  render() {
-    return (
-      <React.Fragment>
-        <Header />
-        <h4 id="request-labels">Request Method: {this.state.requestParams.method ? this.state.requestParams.method.toUpperCase() : null}</h4>
-        <h4 id="request-labels">URL: {this.state.requestParams.url}</h4>
-        <Form handleApiCall={this.callApi} setAppState={this.setAppState}/>
-        <Results data={this.state.data} />
-        <Footer />
-      </React.Fragment>
-    );
-  }
-}
+  return (
+    <React.Fragment>
+      <Header />
+      <div className="section-container">
+        <section className="sidebar-section">
+          <History clearHistory={clearHistory} historyArray={state.historyArray} restoreHistory={restoreHistory} />
+        </section>
+        <section className="main-section">
+          <h4 id="request-labels">Request Method: {state.requestParams.method ? state.requestParams.method.toUpperCase() : null}</h4>
+          <h4 id="request-labels">URL: {state.requestParams.url}</h4>
+          <Form oldMethod={state.oldMethod} handleApiCall={callApi} setAppState={setAppState} oldRequestBody={state.oldRequestBody} oldUrl={state.oldUrl} />
+          <Results data={state.data} />
+        </section>
+      </div>
+      <Footer />
+    </React.Fragment>
+  );
+};
 
 export default App;

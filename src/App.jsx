@@ -12,7 +12,10 @@ const ActionTypes = {
   SET_DATA: 'SET_DATA',
   SET_REQUEST_PARAMS: 'SET_REQUEST_PARAMS',
   ADD_TO_HISTORY: 'ADD_TO_HISTORY',
-  CLEAR_HISTORY: 'CLEAR_HISTORY'
+  CLEAR_HISTORY: 'CLEAR_HISTORY',
+  SET_OLD_REQUEST_BODY: 'SET_OLD_REQUEST_BODY',
+  SET_OLD_URL: 'SET_OLD_URL',
+  SET_OLD_METHOD: 'SET_OLD_METHOD'
 };
 
 // Reducer function to handle state updates
@@ -26,13 +29,19 @@ const reducer = (state, action) => {
       return { ...state, historyArray: [...state.historyArray, action.payload] };
     case ActionTypes.CLEAR_HISTORY:
       return { ...state, historyArray: [] };
+    case ActionTypes.SET_OLD_REQUEST_BODY:
+      return { ...state, oldRequestBody: action.payload };
+    case ActionTypes.SET_OLD_URL:
+      return { ...state, oldUrl: action.payload};
+    case ActionTypes.SET_OLD_METHOD:
+      return { ...state, oldMethod: action.payload };
     default:
       return state;
   }
 };
 
 const initialState = {
-  data: null,
+  data: {},
   requestParams: { method: 'get' },
   historyArray: [],
   oldRequestBody: {},
@@ -44,6 +53,7 @@ const App = () => {
   const [state, dispatch] = useReducer(reducer, initialState);
 
   const fetchData = async (requestBody) => {
+
     try {
       const response = await axios.request({
         url: state.requestParams.url,
@@ -86,9 +96,9 @@ const App = () => {
     const historyItem = state.historyArray[index];
     dispatch({ type: ActionTypes.SET_REQUEST_PARAMS, payload: historyItem.requestParams });
     dispatch({ type: ActionTypes.SET_DATA, payload: historyItem.data });
-    dispatch({ type: ActionTypes.SET_DATA, payload: historyItem.requestParams.url });
-    dispatch({ type: ActionTypes.SET_DATA, payload: historyItem.requestBody });
-    dispatch({ type: ActionTypes.SET_DATA, payload: historyItem.requestParams.method });
+    dispatch({ type: ActionTypes.SET_OLD_URL, payload: historyItem.requestParams.url });
+    dispatch({ type: ActionTypes.SET_OLD_REQUEST_BODY, payload: historyItem.requestBody });
+    dispatch({ type: ActionTypes.SET_OLD_METHOD, payload: historyItem.requestParams.method });
   };
 
   const clearHistory = () => {

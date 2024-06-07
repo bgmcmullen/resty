@@ -5,7 +5,7 @@ import './Form.scss';
 function Form(props) {
 
   const [url, setUrl] = useState('');
-  const [requestBody, setRequestBody] = useState('');
+  const [requestBody, setRequestBody] = useState({});
   const [method, setMethod] = useState('get');
   const [jsonColor, setJsonColor] = useState('green');
   const [jsonBody, setJsonBody] = useState({})
@@ -15,10 +15,17 @@ function Form(props) {
   const putRef = useRef(null);
   const deleteRef = useRef(null);
 
-  useEffect(() => {
+  const isFirstRender = useRef(true);
 
-    props.setAppState({ requestParams: { ...props.requestParams, method, url }});
-  }, [url, method]);
+  useEffect(() => {
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return; 
+    }
+    props.setAppState({ requestParams: { ...props.requestParams, url, method }});
+  }, [method, url]);
+
+
 
   useEffect(() => {
     if(props.oldRequestBody)

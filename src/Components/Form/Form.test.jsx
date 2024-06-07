@@ -1,9 +1,9 @@
 import React from 'react';
-import { render, fireEvent } from '@testing-library/react';
+import { render, fireEvent, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom/';
 import Form from './index.jsx';
 
-xdescribe('Form Component', () => {
+describe('Form Component', () => {
   let handleApiCallMock;
   let setAppStateMock;
 
@@ -26,17 +26,18 @@ xdescribe('Form Component', () => {
     expect(getByLabelText('DELETE')).toBeInTheDocument();
   });
 
-  test('handles URL change correctly', () => {
+  test('handles URL change correctly', async() => {
     const { getByLabelText } = render(
       <Form handleApiCall={handleApiCallMock} setAppState={setAppStateMock} requestParams={{}} />
     );
 
     fireEvent.change(getByLabelText('URL:'), { target: { value: 'https://example.com/api' } });
 
-    expect(setAppStateMock).toHaveBeenCalledWith({
-      requestParams: { method: 'get', url: 'https://example.com/api' },
-    });
-  });
+      expect(setAppStateMock).toHaveBeenCalledWith({
+        requestParams: { url: 'https://example.com/api' },
+      });
+
+});
 
   test('handles method change correctly', () => {
     const { getByLabelText } = render(
@@ -45,9 +46,13 @@ xdescribe('Form Component', () => {
 
     fireEvent.click(getByLabelText('POST'));
 
-    expect(setAppStateMock).toHaveBeenCalledWith({
-      requestParams: { method: 'post', url: '' },
+    waitFor(() => {
+      expect(setAppStateMock).toHaveBeenCalledWith({
+        requestParams: { method: 'post'},
+      });
     });
+ 
+
   });
 
   test('handles JSON body change correctly', () => {

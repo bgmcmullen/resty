@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useReducer } from 'react';
 import './App.scss';
 import axios from 'axios';
 import Header from './Components/Header';
@@ -7,20 +7,47 @@ import Form from './Components/Form';
 import Results from './Components/Results';
 import History from './Components/History';
 
+// Define action types
+const ActionTypes = {
+  SET_DATA: 'SET_DATA',
+  SET_REQUEST_PARAMS: 'SET_REQUEST_PARAMS',
+  ADD_TO_HISTORY: 'ADD_TO_HISTORY',
+  CLEAR_HISTORY: 'CLEAR_HISTORY'
+};
+
+// Reducer function to handle state updates
+const reducer = (state, action) => {
+  switch (action.type) {
+    case ActionTypes.SET_DATA:
+      return { ...state, data: action.payload };
+    case ActionTypes.SET_REQUEST_PARAMS:
+      return { ...state, requestParams: action.payload };
+    case ActionTypes.ADD_TO_HISTORY:
+      return { ...state, historyArray: [...state.historyArray, action.payload] };
+    case ActionTypes.CLEAR_HISTORY:
+      return { ...state, historyArray: [] };
+    default:
+      return state;
+  }
+};
+
+const initialState = {
+  data: null,
+  requestParams: { method: 'get' },
+  historyArray: [],
+  oldRequestBody: {},
+  oldUrl: '',
+  oldMethod: 'get'
+};
+
 const App = () => {
-  const [data, setData] = useState(null);
-  const [requestParams, setRequestParams] = useState({ method: 'get' });
-  const [historyArray, setHistoryArray] = useState([]);
-  const [oldRequestBody, setOldRequestBody] = useState({});
-  const [oldUrl, setOrlUrl] = useState('');
-  const [oldMethod, setOldMethod] = useState('get');
+  const [state, dispatch] = useReducer(reducer, initialState);
 
   const fetchData = async (requestBody) => {
-
     try {
       const response = await axios.request({
-        url: requestParams.url,
-        method: requestParams.method,
+        url: state.requestParams.url,
+        method: state.requestParams.method,
         data: requestBody,
       });
 
@@ -32,19 +59,19 @@ const App = () => {
   };
 
   const callApi = async (requestBody) => {
-    if (!requestParams.url) return;
+    if (!state.requestParams.url) return;
     const results = await fetchData(requestBody);
     const updatedData = {
       count: Array.isArray(results) ? results.length : 'N/A',
       results: results,
     };
-    const historyObject = {requestParams, requestBody, data: updatedData};
+    const historyObject = { requestParams: state.requestParams, requestBody, data: updatedData };
 
-    if(!containsIdenticalObject(historyArray, historyObject)){
-      setHistoryArray([...historyArray, historyObject]);
+    if (!containsIdenticalObject(state.historyArray, historyObject)) {
+      dispatch({ type: ActionTypes.ADD_TO_HISTORY, payload: historyObject });
     }
 
-    setData(updatedData);
+    dispatch({ type: ActionTypes.SET_DATA, payload: updatedData });
   };
 
   function containsIdenticalObject(array, obj) {
@@ -52,20 +79,20 @@ const App = () => {
   }
 
   const setAppState = (newState) => {
-    setRequestParams(newState.requestParams);
+    dispatch({ type: ActionTypes.SET_REQUEST_PARAMS, payload: newState.requestParams });
   };
 
   const restoreHistory = (index) => {
-    setRequestParams(historyArray[index].requestParams);
-    setData(historyArray[index].data);
-    setOrlUrl(historyArray[index].requestParams.url);
-    setOldRequestBody(historyArray[index].requestBody);
-    setOldMethod(historyArray[index].requestParams.method);
-  
+    const historyItem = state.historyArray[index];
+    dispatch({ type: ActionTypes.SET_REQUEST_PARAMS, payload: historyItem.requestParams });
+    dispatch({ type: ActionTypes.SET_DATA, payload: historyItem.data });
+    dispatch({ type: ActionTypes.SET_DATA, payload: historyItem.requestParams.url });
+    dispatch({ type: ActionTypes.SET_DATA, payload: historyItem.requestBody });
+    dispatch({ type: ActionTypes.SET_DATA, payload: historyItem.requestParams.method });
   };
 
   const clearHistory = () => {
-    setHistoryArray([]);
+    dispatch({ type: ActionTypes.CLEAR_HISTORY });
   }
 
   return (
@@ -73,13 +100,13 @@ const App = () => {
       <Header />
       <div className="section-container">
         <section className="sidebar-section">
-          <History clearHistory={clearHistory} historyArray={historyArray} restoreHistory={restoreHistory}/>
+          <History clearHistory={clearHistory} historyArray={state.historyArray} restoreHistory={restoreHistory} />
         </section>
         <section className="main-section">
-          <h4 id="request-labels">Request Method: {requestParams.method ? requestParams.method.toUpperCase() : null}</h4>
-          <h4 id="request-labels">URL: {requestParams.url}</h4>
-          <Form oldMethod={oldMethod} handleApiCall={callApi} setAppState={setAppState} oldRequestBody={oldRequestBody} oldUrl={oldUrl}/>
-          <Results data={data} />
+          <h4 id="request-labels">Request Method: {state.requestParams.method ? state.requestParams.method.toUpperCase() : null}</h4>
+          <h4 id="request-labels">URL: {state.requestParams.url}</h4>
+          <Form oldMethod={state.oldMethod} handleApiCall={callApi} setAppState={setAppState} oldRequestBody={state.oldRequestBody} oldUrl={state.oldUrl} />
+          <Results data={state.data} />
         </section>
       </div>
       <Footer />

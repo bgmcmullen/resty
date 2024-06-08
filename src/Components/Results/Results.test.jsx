@@ -40,3 +40,4 @@ describe('Results component', () => {
     expect(listElement).toBeNull();
   });
 });
+s

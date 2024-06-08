@@ -113,7 +113,9 @@ const App = () => {
   useEffect(() => {
     const previousHistory = JSON.parse(localStorage.getItem("history", (state.historyArray)));
 
-    dispatch({ type: ActionTypes.RESTORE_HISTORY_ARRAY, payload: previousHistory });
+    if(previousHistory) {
+      dispatch({ type: ActionTypes.RESTORE_HISTORY_ARRAY, payload: previousHistory });
+    }
 
   }, []);
 

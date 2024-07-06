@@ -40,11 +40,13 @@ function Form(props) {
   }, [props.oldUrl])
 
   useEffect(() => {
-    setMethod(props.oldMethod);
-
+    if(props.oldMethod) {
+      setMethod(props.oldMethod);
+    }
   }, [props.oldMethod])
 
   useEffect(() => {
+
     if (method === 'get') {
       getRef.current.click();
     } else if (method === 'post') {

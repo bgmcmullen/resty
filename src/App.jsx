@@ -49,7 +49,7 @@ const initialState = {
   historyArray: [],
   oldRequestBody: {},
   oldUrl: '',
-  oldMethod: 'get'
+  oldMethod: ''
 };
 
 const App = () => {

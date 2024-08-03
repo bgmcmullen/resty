@@ -30,13 +30,13 @@ function History(props) {
   return (
     <>
       <div className="sidebar">
-        <h3>Restore History</h3>
+        <p className='history-title'>Restore History</p>
           {historyArray ? (
             <ul>
                 {historyArray.map((history, index) => (
-                  <div className="history-container" key={index + 'div'} data-index={index}  onClick={handleClickHistory}>
+                  <li className="history-container" key={index + 'li'} data-index={index}  onClick={handleClickHistory}>
                     <p className='method' key={index} style={{background: selectMethodColor(history.requestParams.method)}}>{history.requestParams.method.toUpperCase()}</p><p className='url' key={index + 'url'}>{history.requestParams.url}</p>
-                  </div>
+                  </li>
                 ))
               }
             </ul>

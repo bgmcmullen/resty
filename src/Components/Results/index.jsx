@@ -4,9 +4,9 @@ import './Results.scss';
 function Results(props) {
   return (
     <section className="results">
-      <h2>Response:</h2>
+      <p className='results-title'>Response:</p>
       <section>
-        <h2>{props.data ? (props.data.count ? 'Count: ' + props.data.count : null) : null}</h2>
+        <p className>{props.data ? (props.data.count ? 'Count: ' + props.data.count : null) : null}</p>
       </section>
       <section>
         {props.data ? (
@@ -16,7 +16,7 @@ function Results(props) {
                 <li key={index}>{JSON.stringify(result)}</li>
               ))
             ) : (
-              <li>{JSON.stringify(props.data.results)}</li>
+              <li className='results'>{JSON.stringify(props.data.results)}</li>
             )}
           </ul>
         ) : null}

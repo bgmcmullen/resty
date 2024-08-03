@@ -137,8 +137,8 @@ const App = () => {
           <History clearHistory={clearHistory} historyArray={state.historyArray} restoreHistory={restoreHistory} />
         </section>
         <section className="main-section">
-          <h4 id="request-labels">Request Method: {state.requestParams.method ? state.requestParams.method.toUpperCase() : null}</h4>
-          <h4 id="request-labels">URL: {state.requestParams.url}</h4>
+          <p id="request-labels">Request Method: {state.requestParams.method ? state.requestParams.method.toUpperCase() : null}</p>
+          <p id="request-labels">URL: {state.requestParams.url}</p>
           <Form oldMethod={state.oldMethod} handleApiCall={callApi} setAppState={setAppState} oldRequestBody={state.oldRequestBody} oldUrl={state.oldUrl} />
           <Results data={state.data} />
         </section>

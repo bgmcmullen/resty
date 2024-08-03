@@ -119,7 +119,7 @@ function Form(props) {
           </div>
         </form>
       </div>
-      <h4>JSON Body:</h4>
+      <label htmlFor="JSON-input"><p className="json-label">JSON Body:</p></label>
       <textarea id="JSON-input" onChange={handleJSONChange} data-testid="json-input" style={{color: jsonColor}} value={jsonBody}>
       </textarea>
     </>

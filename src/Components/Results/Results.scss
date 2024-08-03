@@ -5,14 +5,16 @@
   border-width: 1px;
 }
 
-li {
+.results li {
   list-style-type: disc;
   margin-left: 20px;
   margin-top: 10px;
   background-color: rgb(197, 255, 255);
 }
 
-h2 {
+.results-title {
   margin-top: 0px;
   padding: 5px;
+  font-size: 20px;
+  font-weight: bold;
 }

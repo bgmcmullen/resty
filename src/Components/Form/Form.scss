@@ -44,15 +44,15 @@ h4 {
   }
 }
 
-@keyframes textColorChange {
+@keyframes sizeChange {
   0% {
-    color: black;
+    transform: scale(1);
   }
   50% {
-    color: gold;
+    transform: scale(1.1);
   }
   100% {
-    color: black;
+    transform: scale(1);
   }
 }
 
@@ -63,20 +63,26 @@ label.methods span {
 
 /* Apply styles when radio button is checked */
 input[type=radio]:checked + span {
-  background: red;
-  animation: textColorChange 5s ease infinite ;
+  background: rgb(255, 123, 0);
+  animation: sizeChange 2.5s ease infinite ;
+  display: inline-block;
+}
+input[type=radio]:not(:checked) + span {
+
+  display: inline-block;
 }
 
 /* Apply styles when the span is hovered and radio button is not checked */
 label.methods span:hover:not(input[type=radio]:checked + span) {
   animation: colorChange 1s  ease infinite;
+  display: inline-block;
 }
 
 #formContainer {
   padding: 3rem;
   display: flex;
   align-items: center;
-  background: radial-gradient(circle, rgb(200, 219, 110), $backgroundColor);
+  background: radial-gradient(circle, rgb(135, 255, 239), $backgroundColor);
   border-radius: $radius;
 }
 
@@ -118,4 +124,11 @@ form {
       }
     }
   }
+}
+
+.json-label {
+  margin: 5px;
+  margin-bottom: 0px;
+  font-weight: bold;
+
 }

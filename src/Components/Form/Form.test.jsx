@@ -34,7 +34,7 @@ describe('Form Component', () => {
     fireEvent.change(getByLabelText('URL:'), { target: { value: 'https://example.com/api' } });
 
       expect(setAppStateMock).toHaveBeenCalledWith({
-        requestParams: { url: 'https://example.com/api' },
+        requestParams: { url: 'https://example.com/api', method: 'get'},
       });
 
 });

@@ -56,13 +56,13 @@ const App = () => {
   const [state, dispatch] = useReducer(reducer, initialState);
 
   const fetchData = async (requestBody) => {
-
+    const response = await axios.request({
+      url: state.requestParams.url,
+      method: state.requestParams.method,
+      data: requestBody,
+    });
     try {
-      const response = await axios.request({
-        url: state.requestParams.url,
-        method: state.requestParams.method,
-        data: requestBody,
-      });
+     
 
       return response.data;
     } catch (error) {
